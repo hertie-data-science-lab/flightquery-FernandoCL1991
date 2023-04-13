@@ -1,3 +1,5 @@
+# TEAM MEMBERS: Augusto Fonseca, Rodrigo Dornelles, Danial Riaz, Fernando Corral
+
 from SortedTableMap import *
 
 '''An application of SortedTableMap, used to query tickets of expected period'''
