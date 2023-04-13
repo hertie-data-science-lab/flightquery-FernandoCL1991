@@ -158,7 +158,7 @@ if __name__ == "__main__":
         flightsA[key] = flightNum
 
     while True:
-        print("Enter flight details: ")
+        print("Enter flight details below")
         origin, dest, date, time = get_user_input()
         key1 = flightsA.Key(origin, dest, date, time)
         key2 = flightsA.Key(origin, dest, date, time)
@@ -166,12 +166,12 @@ if __name__ == "__main__":
 
         if results:
             print("Flights found:")
-            for r in results:
-                print(r)
+            for flight in results:
+                print(flight)
         else:
             print("No flights found for the specified criteria.")
 
-        continue_query = input("Continue? (y/n): ")
+        continue_query = input("Keep searching? (y/n): ")
         if continue_query.lower() != "y":
             break
         else:
@@ -181,7 +181,7 @@ if __name__ == "__main__":
             for flight in possibleFlights:
                 print(flight)
 
-    print("Thanks for reaching to Expandia. See you next time!")
+    print("Thanks for using Expandia. See you next time!")
 
 
 
