@@ -1,5 +1,6 @@
 class MapBase:
     class _Item:
+        # To optimize the query, use -__slots__
         __slots__ = "_key", "_value"
         def __init__(self, key, value):
             self._key = key

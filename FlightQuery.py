@@ -1,7 +1,7 @@
 from SortedTableMap import *
-class FlightQuery(SortedTableMap):
-    '''An application of SortedTableMap, used to query tickets of expected period'''
 
+'''An application of SortedTableMap, used to query tickets of expected period'''
+class FlightQuery(SortedTableMap):
     # Class Key which is defined by four arguments: origin, dest, date, time
     class Key:
         __slots__ = "_origin", "_dest", "_date", "_time"
@@ -13,30 +13,173 @@ class FlightQuery(SortedTableMap):
             self._date = date
             self._time = time
 
-        # Defining the less than method for the Key class to define order of keys in SortedTableMap.
+        # Less than function
         def __lt__(self, other):
-            # These lines implement the less-than method by comparing the origin airport, destination airport,
-            # date, and time of each Key object with another Key object.
-            # If all of these attributes are equal, then the two Key objects are considered equal.
-            if self._origin < other._origin:
+            # Check date
+            if self._date < other._date:
                 return True
-            elif self._origin == other._origin and self._dest < other._dest:
+            # Check date and time
+            elif self._date == other._date and self._time < other._time:
                 return True
-            elif self._origin == other._origin and self._dest == other._dest and self._date < other._date:
+            # Check date and time and origin
+            elif self._date == other._date and self._time == other._time and self._origin < other._origin:
                 return True
-            elif self._origin == other._origin and self._dest == other._dest and self._date == other._date and self._time < other._time:
+            # Check date and time and origin and destination
+            elif self._date == other._date and self._time == other._time and self._origin == other._origin and self._dest < other._dest:
                 return True
+            # Otherwise false
             else:
                 return False
 
-    # Defining query method.
-    # Taking two arguments for which to represent the range of flights that the method should return.
-    def query(self, k1, k2):
-        result = []
-        for key in self._table:
-            if key._origin == k1[0] and key._dest == k1[1]:
-                if k1[2:] <= (key._date, key._time) < k2[2:]:
-                    result.append(key)
-            elif key._origin > k1[0] and key._dest >= k1[1]:
-                break
-        return result
+        # Less than or Equal function
+        def __le__(self, other):
+            # Check date
+            if self._date < other._date:
+                return True
+            # Check date and time
+            elif self._date == other._date and self._time <= other._time:
+                return True
+            # Check date and time and origin
+            elif self._date == other._date and self._time == other._time and self._origin <= other._origin:
+                return True
+            # Check date and time and origin and destination
+            elif self._date == other._date and self._time == other._time and self._origin == other._origin and self._dest <= other._dest:
+                return True
+            # Otherwise false
+            else:
+                return False
+
+        # Equal to function
+        def __eq__(self, other):
+            return self._date == other._date and self._time == other._time and self._origin == other._origin and self._dest == other._dest
+
+        # String function
+        def __str__(self):
+            return print(f"Flight information: {self._date,' ' + self._time,' ' + self._origin,' TO ' + self._dest}")
+
+    # Query function
+    def query(self, key1, key2):
+        results = []
+        for e in self._table:
+            key = e._key
+            if key1 <= key <= key2:
+                results.append(e._value)
+        return results
+
+# Testing class: FlightQuery
+if __name__ == "__main__":
+    # FlightQuery into a variable
+    flightsA = FlightQuery()
+
+    # Passing in new elements into list:
+    possibleFlights = [("Cuba", "Florida", 622, 1200, "No.1"),
+                       ("Cuba", "Florida", 622, 1300, "No.2"),
+                       ("Cuba", "Florida", 622, 1500, "No.3"),
+                       ("Cuba", "Florida", 622, 1800, "No.4"),
+                       ("Miami", "Paris", 777, 1200, "No.5"),
+                       ("Miami", "Paris", 777, 1840, "No.6"),
+                       ("Cuba", "Cancun", 198, 1100, "No.7"),
+                       ("Cuba", "Cancun", 198, 1700, "No.8")]
+
+    # Printing total number of flights
+    # Key = origin, destination, date, time
+    for element in possibleFlights:
+        key = flightsA.Key(element[0], element[1], element[2], element[3])
+        flightNum = element[4]
+        flightsA[key] = flightNum
+    print("\nTotal number of flights: ", len(flightsA))
+
+    print("--------"*5)
+    # User 1 query: Cuba to Florida
+    print("User 1")
+    print("\nFlights from Cuba to Florida between 11:00 and 16:00:")
+    key1 = flightsA.Key("Cuba", "Florida", 622, 1100)
+    key2 = flightsA.Key("Cuba", "Florida", 622, 1600)
+    flights = flightsA.query(key1, key2)
+    for f in flights:
+        print(f)
+
+    print("--------"*5)
+    # User 2 query: Miami to Paris
+    print("User 2")
+    print("\nFlights from Miami to Paris between 18:00 and 22:00:")
+    key1 = flightsA.Key("Miami", "Paris", 198, 1600)
+    key2 = flightsA.Key("Miami", "Paris", 198, 2000)
+    flights = flightsA.query(key1, key2)
+    for f in flights:
+        print(f)
+
+    print("--------"*5)
+    # User 3 query: Cuba to Cancun
+    print("User 3")
+    print("\nFlights from Cuba to Cancun between 16:00 and 20:00:")
+    key1 = flightsA.Key("Cuba", "Cancun", 777, 1800)
+    key2 = flightsA.Key("Cuba", "Cancun", 777, 2200)
+    flights = flightsA.query(key1, key2)
+    for f in flights:
+        print(f)
+
+print("\n")
+# User Interface
+if __name__ == "__main__":
+    # FlightQuery into a variable
+    flightsA = FlightQuery()
+
+    def get_user_input():
+        origin = input("Departing from: ")
+        dest = input("Flying to: ")
+        date = int(input("Date (DD:MM): "))
+        time = int(input("Departure time (HH:MM): "))
+
+        return origin, dest, date, time
+
+    print("Welcome to Expandia!")
+    print("--------"*5)
+    possibleFlights = [("Cuba", "Florida", 622, 1200, "No.1"),
+                       ("Cuba", "Florida", 622, 1300, "No.2"),
+                       ("Cuba", "Florida", 622, 1500, "No.3"),
+                       ("Cuba", "Florida", 622, 1800, "No.4"),
+                       ("Miami", "Paris", 777, 1200, "No.5"),
+                       ("Miami", "Paris", 777, 1840, "No.6"),
+                       ("Cuba", "Cancun", 198, 1100, "No.7"),
+                       ("Cuba", "Cancun", 198, 1700, "No.8")]
+    print("The current flights available are: ", len(possibleFlights))
+    print("--------"*5)
+
+    for flight in possibleFlights:
+        print(flight)
+
+    # Key = origin, dest, date, time
+    for element in possibleFlights:
+        key = flightsA.Key(element[0], element[1], element[2], element[3])
+        flightNum = element[4]
+        flightsA[key] = flightNum
+
+    while True:
+        print("Enter flight details: ")
+        origin, dest, date, time = get_user_input()
+        key1 = flightsA.Key(origin, dest, date, time)
+        key2 = flightsA.Key(origin, dest, date, time)
+        results = flightsA.query(key1, key2)
+
+        if results:
+            print("Flights found:")
+            for r in results:
+                print(r)
+        else:
+            print("No flights found for the specified criteria.")
+
+        continue_query = input("Continue? (y/n): ")
+        if continue_query.lower() != "y":
+            break
+        else:
+            print("The current flights available are: ", len(possibleFlights))
+            print("--------" * 5)
+
+            for flight in possibleFlights:
+                print(flight)
+
+    print("Thanks for reaching to Expandia. See you next time!")
+
+
+
